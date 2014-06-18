@@ -47,15 +47,12 @@ func (w Words) Len() int {
 // Less reports whether the element with
 // index i should sort before the element with index j.
 func (w Words) Less(i, j int) bool {
-	if w[i].Score <= w[j].Score {
-		return true
-	}
-	return false
+	return w[i].Score < w[j].Score
 }
 
 // Swap swaps the elements with indexes i and j.
 func (w Words) Swap(i, j int) {
-	w[j], w[i] = w[i], w[j]
+	w[i], w[j] = w[j], w[i]
 }
 
 // Freq maintains a idf of the universe
@@ -138,22 +135,23 @@ func termFreq(segs []sego.Segment) *Freq {
 	return freq
 }
 
-func (e *Extractor) Keywords(sentence string, topK ...int) Words {
+func (e *Extractor) Keywords(sentence string, topK ...int) []Word {
 	segs := e.Segment([]byte(sentence))
 	tf := termFreq(segs)
 	n := 10
 	if len(topK) >= 1 {
 		n = topK[0]
 	}
-	kws := Words([]Word{})
+	kws := []Word{}
 	for word, tfval := range tf.m {
 		var w Word
 		w.string = word
 		w.Score = tfval * e.IDF.Freq(word)
+		println(word, "\t", tfval, w.Score)
 		kws = append(kws, w)
 	}
-	sort.Reverse(kws)
-	if len(kws) <= 10 {
+	sort.Sort(sort.Reverse(Words(kws)))
+	if len(kws) <= n {
 		return kws
 	}
 	return kws[:n]
