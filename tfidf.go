@@ -12,7 +12,8 @@ import (
 
 var (
 	stop_words = []string{"the", "of", "is", "and", "to", "in", "that", "we", "for", "an", "are", "by", "be", "as", "on", "with", "can", "if", "from", "which", "you", "it", "this", "then", "at", "have", "all", "not", "one", "has", "or", "that",
-		"你们", "小翠", "要是", "坐在", "没有", "还是", "一样", "不是", "回来", "一句", "一声", "自己", "已经", "这个", "他们", "的话", "一只",
+		"你们", "要是", "坐在", "没有", "还是", "一样", "不是", "回来", "一句", "一声", "自己", "已经", "这个", "他们", "的话", "一只",
+		"那个", "两个", "以后", "地上", "随之", "就是", "咱们", "仍然", "出来", "刚刚", "下来", "屋里", "时候", "说话", "不能", "几乎", "进入", "然后", "觉得", "不要", "那些", "什么", "完全", "走出", "似的", "开始", "这样", "这儿", "三个", "怎么", "整个", "突然", "接着", "听到", "出门", "不敢", "可以", "只是", "不住", "直到", "只有", "之后", "最后", "人们", "坐下", "终于", "十分", "而且", "想到", "无法", "不再", "这回", "发生", "那种", "全都", "更加", "不过", "这种", "而是", "牲畜", "学校", "院里", "不下", "有点", "早已", "重新", "跟前", "今日", "第二天",
 	}
 )
 
@@ -116,11 +117,15 @@ func isStopWord(w string) bool {
 			return true
 		}
 	}
+	// 排除量词
+	if utf8.RuneCountInString(w) == 2 && strings.HasPrefix(w, "一") {
+		return true
+	}
 	return false
 }
 
 func termFreq(segs []sego.Segment) *Freq {
-	words := sego.SegmentsToSlice(segs, false)
+	words := sego.SegmentsToSlice(segs, true)
 	freq := newFreq()
 	total := float64(0)
 	for _, w := range words {
@@ -149,7 +154,7 @@ func (e *Extractor) Keywords(sentence string, topK ...int) []Word {
 		var w Word
 		w.string = word
 		w.Score = tfval * e.IDF.Freq(word)
-		println(word, "\t", tfval, w.Score)
+		// println(word, "\t", tfval, w.Score)
 		kws = append(kws, w)
 	}
 	sort.Sort(sort.Reverse(Words(kws)))
