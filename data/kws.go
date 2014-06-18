@@ -23,9 +23,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	kws := ex.Keywords(string(data), 200)
+	kws := ex.Keywords(string(data), n)
 	for i, v := range kws {
-		log.Println(i, v, v.Score)
+		log.Println(i, v.Word, v.Score)
 	}
 }
 

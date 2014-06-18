@@ -38,7 +38,7 @@ func NewExtractor(idfpath, dictfpaths string) (*Extractor, error) {
 }
 
 type Word struct {
-	string
+	Word  string
 	Score float64
 }
 
@@ -153,7 +153,7 @@ func (e *Extractor) Keywords(sentence string, topK ...int) []Word {
 	kws := []Word{}
 	for word, tfval := range tf.m {
 		var w Word
-		w.string = word
+		w.Word = word
 		w.Score = tfval * e.IDF.Freq(word)
 		// println(word, "\t", tfval, w.Score)
 		kws = append(kws, w)
