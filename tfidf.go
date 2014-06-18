@@ -7,11 +7,13 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"unicode/utf8"
 )
 
 var (
 	stop_words = []string{"the", "of", "is", "and", "to", "in", "that", "we", "for", "an", "are", "by", "be", "as", "on", "with", "can", "if", "from", "which", "you", "it", "this", "then", "at", "have", "all", "not", "one", "has", "or", "that",
-		"的", "之", "和", "在", "我", "一", "是", "那"}
+		"你们", "小翠", "要是", "坐在", "没有", "还是", "一样", "不是", "回来", "一句", "一声", "自己", "已经", "这个", "他们", "的话", "一只",
+	}
 )
 
 // Extractor关键字提取器
@@ -122,7 +124,7 @@ func termFreq(segs []sego.Segment) *Freq {
 	freq := newFreq()
 	total := float64(0)
 	for _, w := range words {
-		if isStopWord(w) || len(w) < 2 {
+		if utf8.RuneCountInString(w) < 2 || isStopWord(w) {
 			continue
 		}
 		// 此时freq.Freq(w)默认是0
