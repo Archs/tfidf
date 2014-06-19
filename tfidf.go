@@ -42,20 +42,20 @@ type Word struct {
 	Score float64
 }
 
-type Words []Word
+type ByScore []Word
 
-func (w Words) Len() int {
+func (w ByScore) Len() int {
 	return len(w)
 }
 
 // Less reports whether the element with
 // index i should sort before the element with index j.
-func (w Words) Less(i, j int) bool {
+func (w ByScore) Less(i, j int) bool {
 	return w[i].Score < w[j].Score
 }
 
 // Swap swaps the elements with indexes i and j.
-func (w Words) Swap(i, j int) {
+func (w ByScore) Swap(i, j int) {
 	w[i], w[j] = w[j], w[i]
 }
 
@@ -78,7 +78,7 @@ func (i *Freq) Freq(word string) float64 {
 	return i.median
 }
 
-func (f *Freq) Words() Words {
+func (f *Freq) ByScore() ByScore {
 	w := []Word{}
 	for k, v := range f.m {
 		w = append(w, Word{k, v})
@@ -158,7 +158,7 @@ func (e *Extractor) Keywords(sentence string, topK ...int) []Word {
 		// println(word, "\t", tfval, w.Score)
 		kws = append(kws, w)
 	}
-	sort.Sort(sort.Reverse(Words(kws)))
+	sort.Sort(sort.Reverse(ByScore(kws)))
 	if len(kws) <= n {
 		return kws
 	}
